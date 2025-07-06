@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChatBot Web Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    .response {
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 15px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💬 ChatBot Web</h1>
+  
+  <textarea id="message" rows="4" placeholder="Type your message..."></textarea><br />
+  <button onclick="sendMessage()">Send</button>
+
+  <div class="response" id="chat-response" style="display: none;"></div>
+
+  <script>
+    async function sendMessage() {
+      const message = document.getElementById("message").value;
+      const responseBox = document.getElementById("chat-response");
+
+      if (!message.trim()) return;
+
+      responseBox.innerText = "⏳ Waiting for response...";
+      responseBox.style.display = "block";
+
+      try {
+        const res = await fetch("https://chatboot-production-6733.up.railway.app/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: message,
+            lang: "en"
+          })
+        });
+
+        const data = await res.json();
+        responseBox.innerText = "🤖 " + (data.response || "No response received.");
+      } catch (err) {
+        responseBox.innerText = "❌ Error talking to chatbot.";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
