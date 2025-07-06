@@ -38,6 +38,9 @@
   <div class="response" id="chat-response" style="display: none;"></div>
 
   <script>
+    // ✅ Generate session_id once per user
+    const sessionId = crypto.randomUUID();
+
     async function sendMessage() {
       const message = document.getElementById("message").value;
       const responseBox = document.getElementById("chat-response");
@@ -48,14 +51,15 @@
       responseBox.style.display = "block";
 
       try {
-        const res = await fetch("https://chatboot-production-6733.up.railway.app/chat", {
+        const res = await fetch("https://chatboot-production-8e99.up.railway.app/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
             message: message,
-            lang: "en"
+            lang: "en",
+            session_id: sessionId // ✅ Send session to API
           })
         });
 
@@ -63,7 +67,7 @@
         responseBox.innerText = "🤖 " + (data.response || "No response received.");
       } catch (err) {
         responseBox.innerText = "❌ Error talking to chatbot.";
-        console.error(err);
+        console.error("Fetch error:", err);
       }
     }
   </script>
