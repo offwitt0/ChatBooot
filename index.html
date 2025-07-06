@@ -64,7 +64,7 @@
         });
 
         const data = await res.json();
-        responseBox.innerText = "🤖 " + (data.response || "No response received.");
+        responseBox.innerHTML = "🤖 " + (data.response || "No response received.");
       } catch (err) {
         responseBox.innerText = "❌ Error talking to chatbot.";
         console.error("Fetch error:", err);
