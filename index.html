@@ -2,77 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🎤 Voice ChatBot</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    textarea { width: 100%; padding: 10px; font-size: 16px; }
-    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
-    .response { margin-top: 20px; background-color: #f2f2f2; padding: 15px; border-radius: 6px; }
-  </style>
+  <title>💬 Vacation ChatBot</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>💬 Vacation ChatBot</h1>
 
-  <textarea id="message" rows="4" placeholder="Type or speak your message..."></textarea><br />
-  <button onclick="sendMessage()">Send</button>
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
 
-  <div class="response" id="chat-response" style="display: none;"></div>
+    <div class="input-area">
+      <textarea id="message" placeholder="Type your message..."></textarea>
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="resetChat()" class="reset-btn">Reset</button>
+    </div>
+  </div>
 
-  <script>
-    const sessionId = crypto.randomUUID(); // Unique session per user
-
-    async function sendMessage() {
-      const msg = document.getElementById("message").value;
-      const responseBox = document.getElementById("chat-response");
-      if (!msg.trim()) return;
-
-      responseBox.innerText = "⏳ Waiting for response...";
-      responseBox.style.display = "block";
-
-      try {
-        const res = await fetch("https://chatboot-production-8e99.up.railway.app/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg, lang: "en", session_id: sessionId }),
-        });
-        const data = await res.json();
-        responseBox.innerText = "🤖 " + (data.response || "No response received.");
-        speak(data.response); // Read the response aloud
-      } catch (err) {
-        responseBox.innerText = "❌ Error talking to chatbot.";
-        console.error(err);
-      }
-    }
-
-    function speak(text) {
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-      }
-    }
-
-    function startListening() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert("Sorry, your browser does not support voice input.");
-        return;
-      }
-
-      const recognition = new SpeechRecognition();
-      recognition.lang = "en-US";
-      recognition.interimResults = false;
-
-      recognition.onresult = (event) => {
-        const spokenText = event.results[0][0].transcript;
-        document.getElementById("message").value = spokenText;
-        sendMessage();
-      };
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
-      };
-
-      recognition.start();
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
