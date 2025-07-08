@@ -32,7 +32,20 @@ async function sendMessage() {
       alert("❌ Invalid phone number format.");
       return;
     }
-      localStorage.setItem(phoneKey, phone.replace(/^\+/, ""));
+    phone = phone.replace(/^\+/, "");
+    localStorage.setItem(phoneKey, phone);
+  }
+
+  // 🔁 Always check if user linked Telegram
+  const precheck = await fetch("https://chatboot-production-8e99.up.railway.app/check-phone", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phone }),
+  });
+  const check = await precheck.json();
+  if (!check.linked) {
+    const modal = document.getElementById("telegram-modal");
+    if (modal) modal.style.display = "flex";
   }
 
   addMessage("🧑 " + userMsg, "user");
@@ -60,11 +73,9 @@ async function sendMessage() {
     addMessage(botText, "bot");
     saveToHistory({ sender: "bot", text: botText });
   } catch (err) {
-    console.error(err);
+    console.error("❌ Chatbot request failed:", err);
     removeLastBotMessage();
-    const errorMsg = "❌ Error talking to chatbot.";
-    addMessage(errorMsg, "bot");
-    saveToHistory({ sender: "bot", text: errorMsg });
+    addMessage("❌ Error talking to chatbot.", "bot");
   }
 }
 
@@ -88,7 +99,10 @@ function saveToHistory(entry) {
 function removeLastBotMessage() {
   const messages = [...document.querySelectorAll(".bot")];
   if (messages.length > 0) {
-    chatBox.removeChild(messages[messages.length - 1]);
+    const last = messages[messages.length - 1];
+    if (last.innerText.includes("⏳")) {
+      chatBox.removeChild(last);
+    }
   }
 }
 

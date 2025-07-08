@@ -7,6 +7,27 @@
 </head>
 <body>
 
+  <!-- ✅ Modal inside <body> -->
+  <div id="telegram-modal">
+    <div style="background:white; padding:20px; border-radius:12px; max-width:90%; text-align:center;">
+      <p style="margin-bottom:15px; font-size:16px;">
+        📲 To receive vacation suggestions in Telegram,<br>
+        tap the button below and then press <b>📱 Share Phone Number</b>.
+      </p>
+      <a href="https://t.me/fastautomatebot" target="_blank" style="display:inline-block; background:#128c7e; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;">Open Telegram Bot</a>
+    </div>
+  </div>
+  <div id="telegram-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:12px; max-width:90%; text-align:center; position:relative;">
+    <span onclick="document.getElementById('telegram-modal').style.display='none'" style="position:absolute; top:10px; right:20px; cursor:pointer;">❌</span>
+    <p style="margin-bottom:15px; font-size:16px;">
+      📲 To receive vacation suggestions in Telegram,<br>
+      tap the button below and then press <b>📱 Share Phone Number</b>.
+    </p>
+    <a href="https://t.me/fastautomatebot" target="_blank" style="display:inline-block; background:#128c7e; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;">Open Telegram Bot</a>
+  </div>
+</div>
+
   <div class="chat-container">
     <div id="chat-box" class="chat-box"></div>
 
@@ -20,4 +41,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-

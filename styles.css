@@ -82,3 +82,29 @@ button:hover {
 .reset-btn {
   background-color: #d9534f;
 }
+
+.link-message {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+#telegram-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#telegram-modal.show {
+  display: flex;
+}
