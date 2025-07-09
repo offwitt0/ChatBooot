@@ -2,6 +2,48 @@ const sessionKey = "chat_session_id";
 const historyKey = "chat_history";
 const phoneKey = "chat_user_phone";
 
+// Web Speech API setup
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.continuous = false;
+recognition.interimResults = false;
+
+let currentLang = 'en-US';  // default language
+
+function setRecognitionLang(langCode) {
+  recognition.lang = langCode;
+}
+
+// Set initial language
+setRecognitionLang(currentLang);
+
+// When speech is recognized
+recognition.onresult = function (event) {
+  const transcript = event.results[0][0].transcript;
+  document.getElementById("message").value = transcript;
+  sendMessage();
+};
+
+recognition.onerror = function (event) {
+  alert("❌ Voice recognition error: " + event.error);
+};
+
+function toggleVoice() {
+  recognition.start();
+}
+
+function toggleLanguage() {
+  if (currentLang === 'en-US') {
+    currentLang = 'ar-EG';  // Arabic (Egypt)
+    document.getElementById("lang-btn").innerText = "🌐 EN";
+  } else {
+    currentLang = 'en-US';
+    document.getElementById("lang-btn").innerText = "🌐 AR";
+  }
+  setRecognitionLang(currentLang);
+}
+
+
 const sessionId = localStorage.getItem(sessionKey) || (() => {
   const id = crypto.randomUUID();
   localStorage.setItem(sessionKey, id);
@@ -11,13 +53,9 @@ const sessionId = localStorage.getItem(sessionKey) || (() => {
 const chatBox = document.getElementById("chat-box");
 
 window.onload = () => {
-  const history = JSON.parse(localStorage.getItem(historyKey)) || [];
-  if (history.length === 0) {
-    addMessage("🤖 Hello! I’m your vacation assistant. Ask me where to stay on your next trip.", "bot");
-    saveToHistory({ sender: "bot", text: "🤖 Hello! I’m your vacation assistant. Ask me where to stay on your next trip." });
-  } else {
-    history.forEach(msg => addMessage(msg.text, msg.sender));
-  }
+  localStorage.removeItem("chat_history");
+  addMessage("🤖 Hello! I’m your vacation assistant. Ask me where to stay on your next trip.", "bot");
+  saveToHistory({ sender: "bot", text: "🤖 Hello! I’m your vacation assistant. Ask me where to stay on your next trip." });
 };
 
 async function sendMessage() {
@@ -42,8 +80,9 @@ async function sendMessage() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ phone }),
   });
+
   const check = await precheck.json();
-  if (!check.linked) {
+  if (!check.linked && localStorage.getItem("telegram_modal_dismissed") !== "true") {
     const modal = document.getElementById("telegram-modal");
     if (modal) modal.style.display = "flex";
   }
@@ -107,8 +146,12 @@ function removeLastBotMessage() {
 }
 
 function resetChat() {
-  localStorage.removeItem(historyKey);
-  localStorage.removeItem(sessionKey);
-  localStorage.removeItem(phoneKey);
-  location.reload();
+  localStorage.removeItem(historyKey); // 🧹 Only clear chat messages
+  location.reload();                   // 🔄 Reload the page to show fresh UI
+}
+
+function dismissTelegramModal() {
+  const modal = document.getElementById("telegram-modal");
+  if (modal) modal.style.display = "none";
+  localStorage.setItem("telegram_modal_dismissed", "true");
 }

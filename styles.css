@@ -108,3 +108,23 @@ button:hover {
 #telegram-modal.show {
   display: flex;
 }
+
+.telegram-bot-btn {
+    display: inline-block;
+    background: #128c7e;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.telegram-bot-btn:hover {
+    background: #0f7a6b;
+}
+
+.telegram-bot-btn:focus {
+    outline: 2px solid #128c7e;
+    outline-offset: 2px;
+}
